@@ -1,131 +1,221 @@
-import React,{ useEffect,useState } from 'react'
-import Carousel from 'react-material-ui-carousel'
-import './ProductDetails.css'
-import { useSelector,useDispatch} from 'react-redux'
-import { clearErrors, getProductDetails } from '../../actions/productAction'
+import React, { useEffect, useState } from "react";
+import Carousel from "react-material-ui-carousel";
+import "./ProductDetails.css";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  clearErrors,
+  getProductDetails,
+  newReview,
+} from "../../actions/productAction";
 import { useParams } from "react-router-dom";
-import ReactStars from 'react-rating-stars-component';
-import Reviewcard from './Reviewcard.js';
-import Loader from '../layout/loader/Loader';
-import {useAlert} from 'react-alert';
-import MetaData from '../layout/MetaData';
-import { addItemsToCart } from '../../actions/cartAction';
+import Reviewcard from "./Reviewcard.js";
+import Loader from "../layout/loader/Loader";
+import { useAlert } from "react-alert";
+import MetaData from "../layout/MetaData";
+import { addItemsToCart } from "../../actions/cartAction";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
+} from "@material-ui/core";
+import { Rating } from "@material-ui/lab";
+import { NEW_REVIEW_RESET } from "../../constants/productConstant";
 
 const ProductDetails = () => {
-  const alert=useAlert();
+  const alert = useAlert();
 
-  const { id } = useParams();//for get route id
+  const { id } = useParams(); //for get route id
   const dispatch = useDispatch();
-  const {product,loading,error } = useSelector(state=>state.productDetails)
-  
-  const options ={
-    edit : false,
-    color:"rgba(20,20,20,0.1)",
-    activeColor:"rgb(255,164,28)",
-    size:window.innerWidth < 600 ? 20:20,
-    value:product.ratings,
-    isHalf:true,
-  }
 
-  const [quantity, setQuantity] = useState(1)
+  const { product, loading, error } = useSelector(
+    (state) => state.productDetails
+  );
 
-  const increseQuantity = ()=>{
-    if(product.stock <= quantity)return;
-    
+  const { success, error: reviewError } = useSelector(
+    (state) => state.newReview
+  );
+
+  const options = {
+    size: "large",
+    value: product.ratings,
+    readOnly: true,
+    precision: 0.5,
+  };
+
+  const [quantity, setQuantity] = useState(1);
+  const [open, setOpen] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+
+  const increseQuantity = () => {
+    if (product.stock <= quantity) return;
+
     const qty = quantity + 1;
-    setQuantity(qty)
-  }
+    setQuantity(qty);
+  };
 
-  const decreaseQuality = () =>{
-    if( 1 >= quantity)return;
-    
+  const decreaseQuality = () => {
+    if (1 >= quantity) return;
+
     const qty = quantity - 1;
-    setQuantity(qty)
-  }
+    setQuantity(qty);
+  };
 
-  const addToCartHandler = () =>{
-   dispatch(addItemsToCart(id,quantity));
-   alert.success("Item added to Cart")
-  }
+  const addToCartHandler = () => {
+    dispatch(addItemsToCart(id, quantity));
+    alert.success("Item added to Cart");
+  };
+
+  const submitReviewToggle = () => {
+    open ? setOpen(false) : setOpen(true);
+  };
+
+  const reviewSubmitHandler = () => {
+    const myForm = new FormData();
+
+    myForm.set("rating", rating);
+    myForm.set("comment", comment);
+    myForm.set("productId", id);
+    dispatch(newReview(myForm));
+
+    setOpen(false);
+  };
 
   useEffect(() => {
     if (error) {
-       alert.error(error);
-       dispatch(clearErrors());
-      }
-    dispatch(getProductDetails(id))
-  }, [dispatch ,id,error,alert])
+      alert.error(error);
+      dispatch(clearErrors());
+    }
+    if (reviewError) {
+      alert.error(reviewError);
+      dispatch(clearErrors());
+    }
+    if (success) {
+      alert.success("Review Submitted Successfully");
+      dispatch({
+        type: NEW_REVIEW_RESET,
+      });
+    }
 
-  
-  
+    dispatch(getProductDetails(id));
+  }, [dispatch, id, error, alert, reviewError, success]);
+
   return (
-      <>
-      {loading ? <Loader/> :<>
-      <MetaData title={`${product.name}--ECOMMERCE`} />
+    <>
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          <MetaData title={`${product.name}--ECOMMERCE`} />
 
-      <div className='ProductDetails'>
+          <div className="ProductDetails">
             <div>
               <Carousel>
-                {product.images && product.images.map((item,i)=>(
-                  <img
-                    className='CarouselImage' 
-                    key={item.url}
-                    src={item.url}
-                    alt={`${i} Slide`}
-                  />  
-                ))}
+                {product.images &&
+                  product.images.map((item, i) => (
+                    <img
+                      className="CarouselImage"
+                      key={item.url}
+                      src={item.url}
+                      alt={`${i} Slide`}
+                    />
+                  ))}
               </Carousel>
             </div>
             <div>
-                 <div className='detailsBlock-1'>
-                    <h2>{product.name}</h2>
-                    <p>Product # {product._id}</p>
-                 </div>
-                 <div className='detailsBlock-2'>
-                    <ReactStars {...options} /> 
-                    <span>({product.numOfReviews} reviews)</span>
-                 </div>
-                 <div className='detailsBlock-3'>
-                    <h1>{`₹${product.price}`}</h1>
-                  
-                        <div className='detailsBlock-3-1'>
-                          <div className='detailsBlock-3-1-1'>
-                              <button onClick={decreaseQuality}>-</button>
-                              <input type="number" readOnly value={quantity} />
-                              <button onClick={increseQuantity}>+</button>
-                          </div>
-                          <button onClick={addToCartHandler} >Add to Cart</button>
-                        </div>
-                  
-                    <p>
-                      Status:
-                      <b className={product.stock < 1 ? "redColor":"greenColor"}>
-                          {product.stock < 1 ? "OutOfStock" : "InStock"}
-                      </b>
-                    </p>
+              <div className="detailsBlock-1">
+                <h2>{product.name}</h2>
+                <p>Product # {product._id}</p>
+              </div>
+              <div className="detailsBlock-2">
+                <Rating {...options} />
+                <span className="detailsBlock-2-span">
+                  ({product.numOfReviews} reviews)
+                </span>
+              </div>
+              <div className="detailsBlock-3">
+                <h1>{`₹${product.price}`}</h1>
 
-                 </div>
+                <div className="detailsBlock-3-1">
+                  <div className="detailsBlock-3-1-1">
+                    <button onClick={decreaseQuality}>-</button>
+                    <input type="number" readOnly value={quantity} />
+                    <button onClick={increseQuantity}>+</button>
+                  </div>
+                  <button
+                    disabled={product.stock < 1 ? true : false}
+                    onClick={addToCartHandler}
+                  >
+                    Add to Cart
+                  </button>
+                </div>
 
-                 <div className='detailsBlock-4'>
-                   Description : <p>{product.description}</p>
-                 </div>
-                 <button className='submitReview'>Submit Review</button>
+                <p>
+                  Status:
+                  <b className={product.stock < 1 ? "redColor" : "greenColor"}>
+                    {product.stock < 1 ? "OutOfStock" : "InStock"}
+                  </b>
+                </p>
+              </div>
+
+              <div className="detailsBlock-4">
+                Description : <p>{product.description}</p>
+              </div>
+              <button onClick={submitReviewToggle} className="submitReview">
+                Submit Review
+              </button>
             </div>
-      </div>
+          </div>
 
-      <h3 className='reviewHeading'>REVIEWS</h3>
-      {product.reviews && product.reviews[0] ? (
-        <div  className='reviews'>
-          {product.reviews && 
-          product.reviews.map((review)=><Reviewcard key={review._id} review={review} />)}          
-        </div>
-      ) :(
-        <p className='noReviews'>No Reviews Yet</p>
-      ) }
+          <h3 className="reviewHeading">REVIEWS</h3>
 
-      </>}
-      </>
-  )
-}
+          <Dialog
+            aria-labelledby="simple-dialog-title"
+            open={open}
+            onClose={submitReviewToggle}
+          >
+            <DialogTitle>Submit Review</DialogTitle>
+            <DialogContent className="submitDialog">
+              <Rating
+                onChange={(e) => setRating(e.target.value)}
+                value={rating}
+                size="large"
+              />
 
-export default ProductDetails
+              <textarea
+                className="submitDialogTextArea"
+                cols="30"
+                rows="5"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              ></textarea>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={submitReviewToggle} color="secondary">
+                Cancel
+              </Button>
+              <Button onClick={reviewSubmitHandler} color="primary">
+                Submit
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          {product.reviews && product.reviews[0] ? (
+            <div className="reviews">
+              {product.reviews &&
+                product.reviews.map((review) => (
+                  <Reviewcard key={review._id} review={review} />
+                ))}
+            </div>
+          ) : (
+            <p className="noReviews">No Reviews Yet</p>
+          )}
+        </>
+      )}
+    </>
+  );
+};
+
+export default ProductDetails;

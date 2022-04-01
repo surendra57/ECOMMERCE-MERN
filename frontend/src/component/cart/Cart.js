@@ -12,6 +12,7 @@ const Cart = () => {
   const dispatch = useDispatch();
   const naviagte = useNavigate();
   const { cartItems } = useSelector((state) => state.cart);
+  const { isAuthenticated } = useSelector((state) => state.user);
 
   const increaseQuantity = (id, quantity, stock) => {
     const newQty = quantity + 1;
@@ -34,11 +35,16 @@ const Cart = () => {
   };
 
   const checkoutHandler = () => {
-    naviagte("/login?redirect=shipping");
+    if (isAuthenticated) {
+      naviagte("/shipping");
+    }
+
+    // naviagte("/login?redirect=shipping");
   };
 
   return (
     <Fragment>
+      <MetaData title="Cart" />
       {cartItems.length === 0 ? (
         <div className="emptyCart">
           <RemoveShoppingCartIcon />

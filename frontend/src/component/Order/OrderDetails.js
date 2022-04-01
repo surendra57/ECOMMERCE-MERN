@@ -11,12 +11,9 @@ import { useAlert } from "react-alert";
 const OrderDetails = () => {
   const { order, error, loading } = useSelector((state) => state.orderDetails);
 
-  console.log(order);
-
   const dispatch = useDispatch();
   const alert = useAlert();
   const { id } = useParams();
-  console.log(id);
 
   useEffect(() => {
     if (error) {
@@ -33,10 +30,9 @@ const OrderDetails = () => {
         <Loader />
       ) : (
         <Fragment>
-          <h1 className="orfer">orfer</h1>
           <MetaData title="Order Details" />
           <div className="orderDetailsPage">
-            <div className="orderDetailsPage">
+            <div className="orderDetailsContainer">
               <Typography component="h1">
                 Order #{order && order._id}
               </Typography>
@@ -56,7 +52,7 @@ const OrderDetails = () => {
                   <p>Address:</p>
                   <span>
                     {order.shippingInfo &&
-                      `${order.shippingInfo.address},${order.shippingInfo.city},${order.shippingInfo.state},${order.shippingInfo.pinCode},${order.shippingInfo.country}`}
+                      `${order.shippingInfo.address}, ${order.shippingInfo.city}, ${order.shippingInfo.state}, ${order.shippingInfo.pinCode}, ${order.shippingInfo.country}`}
                   </span>
                 </div>
               </div>
@@ -77,11 +73,13 @@ const OrderDetails = () => {
                       : "NOT PAID"}
                   </p>
                 </div>
+
                 <div>
                   <p>Amount:</p>
                   <span>{order.totalPrice && order.totalPrice}</span>
                 </div>
               </div>
+
               <Typography>Order Status</Typography>
               <div className="orderDetailsContainerBox">
                 <div>
@@ -97,9 +95,10 @@ const OrderDetails = () => {
                 </div>
               </div>
             </div>
+
             <div className="orderDetailsCartItems">
-              <Typography>Order Items</Typography>
-              <div className="orderDetailsContainerBox">
+              <Typography>Order Items:</Typography>
+              <div className="orderDetailsCartItemsContainer">
                 {order.orderItems &&
                   order.orderItems.map((item) => (
                     <div key={item.product}>

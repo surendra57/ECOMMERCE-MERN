@@ -67,7 +67,7 @@ const LoginSignUp = ({ location }) => {
     }
   };
 
-  const redirect = searchParams ? "/shipping" : "/account";
+  // const redirect = searchParams ? "/shipping" : "/account";
 
   useEffect(() => {
     if (error) {
@@ -75,9 +75,9 @@ const LoginSignUp = ({ location }) => {
       dispatch(clearErrors());
     }
     if (isAuthenticated) {
-      navigate(redirect);
+      navigate("/account");
     }
-  }, [dispatch, error, alert, isAuthenticated, navigate, redirect]);
+  }, [dispatch, error, alert, isAuthenticated, navigate]);
 
   const switchTabs = (e, tab) => {
     if (tab === "login") {

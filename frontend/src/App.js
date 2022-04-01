@@ -80,9 +80,6 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/shipping" element={<Shipping />} />
         </Route>
-        <Route element={<ProtectedRoute />}>
-          <Route path="/order/confirm" element={<ConfirmOrder />} />
-        </Route>
 
         {stripeApiKey && (
           <Route element={<ProtectedRoute />}>
@@ -101,6 +98,10 @@ function App() {
         </Route>
         <Route element={<ProtectedRoute />}>
           <Route path="/orders" element={<MyOrders />} />
+        </Route>
+
+        <Route element={<ProtectedRoute />}>
+          <Route path="/order/confirm" element={<ConfirmOrder />} />
         </Route>
         <Route element={<ProtectedRoute />}>
           <Route path="/order/:id" element={<OrderDetails />} />
