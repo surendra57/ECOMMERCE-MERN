@@ -248,4 +248,10 @@
     width: 20vmax;
     margin: 3vmax 0;
   }
+  .reviewCard > p {
+    font: 500 3vw "Roboto";
+  }
+  .reviewCardComment {
+    font: 300 3vw cursive;
+  }
 }

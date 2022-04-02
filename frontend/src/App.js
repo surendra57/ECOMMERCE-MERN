@@ -29,6 +29,12 @@ import { loadStripe } from "@stripe/stripe-js";
 import OrderSuccess from "./component/cart/OrderSuccess.js";
 import MyOrders from "./component/Order/MyOrders.js";
 import OrderDetails from "./component/Order/OrderDetails.js";
+import Dashboard from "./component/admin/Dashboard.js";
+import ProductList from "./component/admin/ProductList.js";
+import NewProduct from "./component/admin/NewProduct";
+import UpdateProduct from "./component/admin/UpdateProduct";
+import OrderList from "./component/admin/OrderList";
+import ProcessOrder from "./component/admin/ProcessOrder";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.user);
@@ -105,6 +111,26 @@ function App() {
         </Route>
         <Route element={<ProtectedRoute />}>
           <Route path="/order/:id" element={<OrderDetails />} />
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/admin/dashboard" element={<Dashboard />} />
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/admin/products" element={<ProductList />} />
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/admin/product" element={<NewProduct />} />
+        </Route>
+
+        <Route element={<ProtectedRoute />}>
+          <Route path="/admin/product/:id" element={<UpdateProduct />} />
+        </Route>
+
+        <Route element={<ProtectedRoute />}>
+          <Route path="/admin/orders" element={<OrderList />} />
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/admin/order/:id" element={<ProcessOrder />} />
         </Route>
       </Routes>
       <Footer />
