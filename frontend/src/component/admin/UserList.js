@@ -2,11 +2,6 @@ import React, { Fragment, useEffect } from "react";
 import { DataGrid } from "@material-ui/data-grid";
 import "./productList.css";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  clearErrors,
-  getAdminProduct,
-  deleteProduct,
-} from "../../actions/productAction";
 import { Link, useNavigate } from "react-router-dom";
 import { useAlert } from "react-alert";
 import { Button } from "@material-ui/core";
@@ -14,20 +9,23 @@ import MetaData from "../layout/MetaData";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import SideBar from "./Sidebar";
-import { DELETE_PRODUCT_RESET } from "../../constants/productConstant";
+import { getAllUsers, clearErrors, deleteUser } from "../../actions/userAction";
+import { DELETE_USER_RESET } from "../../constants/userConstant";
 
-const ProductList = () => {
+const UserList = () => {
   const dispatch = useDispatch();
   const alert = useAlert();
   const naviagte = useNavigate();
-  const { error, products } = useSelector((state) => state.products);
+  const { error, users } = useSelector((state) => state.allUsers);
 
-  const { error: deleteError, isDeleted } = useSelector(
-    (state) => state.product
-  );
+  const {
+    error: deleteError,
+    isDeleted,
+    message,
+  } = useSelector((state) => state.profile);
 
-  const deleteProductHandler = (id) => {
-    dispatch(deleteProduct(id));
+  const deleteUserHandler = (id) => {
+    dispatch(deleteUser(id));
   };
 
   useEffect(() => {
@@ -42,37 +40,42 @@ const ProductList = () => {
     }
 
     if (isDeleted) {
-      alert.success("Product Deleted Successfully");
-      naviagte("/admin/dashboard");
-      dispatch({ type: DELETE_PRODUCT_RESET });
+      alert.success(message);
+      naviagte("/admin/users");
+      dispatch({ type: DELETE_USER_RESET });
     }
 
-    dispatch(getAdminProduct());
-  }, [dispatch, alert, error, naviagte, deleteError, isDeleted]);
+    dispatch(getAllUsers());
+  }, [dispatch, alert, error, naviagte, deleteError, isDeleted, message]);
 
   const columns = [
-    { field: "id", headerName: "Product ID", minWidth: 150, flex: 0.2 },
+    { field: "id", headerName: "User ID", minWidth: 150, flex: 0.1 },
 
     {
-      field: "name",
-      headerName: "Name",
+      field: "email",
+      headerName: "Email",
       minWidth: 100,
       flex: 0.2,
     },
     {
-      field: "stock",
-      headerName: "Stock",
+      field: "name",
+      headerName: "Name",
       type: "number",
       minWidth: 100,
       flex: 0.1,
     },
 
     {
-      field: "price",
-      headerName: "Price",
+      field: "role",
+      headerName: "Role",
       type: "number",
       minWidth: 100,
       flex: 0.1,
+      cellClassName: (params) => {
+        return params.getValue(params.id, "role") === "admin"
+          ? "greenColor"
+          : "redColor";
+      },
     },
 
     {
@@ -85,13 +88,13 @@ const ProductList = () => {
       renderCell: (params) => {
         return (
           <Fragment>
-            <Link to={`/admin/product/${params.getValue(params.id, "id")}`}>
+            <Link to={`/admin/user/${params.getValue(params.id, "id")}`}>
               <EditIcon />
             </Link>
 
             <Button
               onClick={() =>
-                deleteProductHandler(params.getValue(params.id, "id"))
+                deleteUserHandler(params.getValue(params.id, "id"))
               }
             >
               <DeleteIcon />
@@ -104,24 +107,24 @@ const ProductList = () => {
 
   const rows = [];
 
-  products &&
-    products.forEach((item) => {
+  users &&
+    users.forEach((item) => {
       rows.push({
         id: item._id,
-        stock: item.stock,
-        price: item.price,
+        role: item.role,
+        email: item.email,
         name: item.name,
       });
     });
 
   return (
     <Fragment>
-      <MetaData title={`ALL PRODUCTS - Admin`} />
+      <MetaData title={`ALL users - Admin`} />
 
       <div className="dashboard">
         <SideBar />
         <div className="productListContainer">
-          <h1 id="productListHeading">ALL PRODUCTS</h1>
+          <h1 id="productListHeading">ALL USERS</h1>
 
           <DataGrid
             rows={rows}
@@ -137,4 +140,4 @@ const ProductList = () => {
   );
 };
 
-export default ProductList;
+export default UserList;

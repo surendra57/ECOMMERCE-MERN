@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import "./LoginSignUp.css";
 import Loader from "../layout/loader/Loader.js";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
 import FaceIcon from "@material-ui/icons/Face";
@@ -13,7 +13,7 @@ const LoginSignUp = ({ location }) => {
   const dispatch = useDispatch();
   const alert = useAlert();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  // const [searchParams] = useSearchParams();
 
   const { error, loading, isAuthenticated } = useSelector(
     (state) => state.user

@@ -35,6 +35,12 @@ import NewProduct from "./component/admin/NewProduct";
 import UpdateProduct from "./component/admin/UpdateProduct";
 import OrderList from "./component/admin/OrderList";
 import ProcessOrder from "./component/admin/ProcessOrder";
+import UserList from "./component/admin/UserList";
+import UpdateUser from "./component/admin/UpdateUser";
+import ProductReviews from "./component/admin/ProductReviews";
+import Contact from "./component/layout/Contact/Contact";
+import About from "./component/layout/About/About";
+import NotFound from "./component/layout/Not Found/NotFound";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.user);
@@ -57,6 +63,8 @@ function App() {
     store.dispatch(loadUser());
     getStripeApiKey();
   }, []);
+
+  // window.addEventListener("contextmenu", (e) => e.preventDefault());
   return (
     <Router>
       <Header />
@@ -67,6 +75,8 @@ function App() {
         <Route path="/products" element={<Products />} />
         <Route path="/products/:keyword" element={<Products />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/about" element={<About />} />
 
         <Route element={<ProtectedRoute />}>
           <Route path="/account" element={<Profile />} />
@@ -132,7 +142,26 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/admin/order/:id" element={<ProcessOrder />} />
         </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/admin/users" element={<UserList />} />
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/admin/user/:id" element={<UpdateUser />} />
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/admin/reviews" element={<ProductReviews />} />
+        </Route>
+
+        <Route
+          path="*"
+          element={
+            window.location.pathname === "/process/payment" ? null : (
+              <NotFound />
+            )
+          }
+        />
       </Routes>
+
       <Footer />
     </Router>
   );

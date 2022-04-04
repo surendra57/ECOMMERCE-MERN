@@ -1,13 +1,12 @@
-import React from 'react'
+import React from "react";
 import playStore from "../../../images/playstore.png";
 import appStore from "../../../images/Appstore.png";
-import "./footer.css"
+import "./footer.css";
 
 const Footer = () => {
   return (
     <footer id="footer">
-     <div className="leftFooter">
-        <h4>DOWNLOAD OUR APP</h4>
+      <div className="leftFooter">
         <p>Download App for Android and IOS mobile phone</p>
         <img src={playStore} alt="playstore" />
         <img src={appStore} alt="Appstore" />
@@ -17,7 +16,7 @@ const Footer = () => {
         <h1>ECOMMERCE</h1>
         <p>High Quality is our first Priority</p>
 
-        <p>Copyrights 2021 &copy; MeSurendra</p>
+        <p>Copyrights 2022 &copy; MeSurendra</p>
       </div>
 
       <div className="rightFooter">
@@ -26,9 +25,8 @@ const Footer = () => {
         <a href="http://youtube.com/">Youtube</a>
         <a href="http://instagram.com/peanutwithbutter__">Facebook</a>
       </div>
-
     </footer>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;
