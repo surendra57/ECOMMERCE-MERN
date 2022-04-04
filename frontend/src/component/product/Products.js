@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import "./Products.css";
 import { useSelector, useDispatch } from "react-redux";
 import { clearErrors, getProduct } from "../../actions/productAction";
@@ -24,7 +24,7 @@ const categories = [
 const Products = () => {
   const dispatch = useDispatch();
   const alert = useAlert();
-  const isMounted = useRef(true);
+  //   const isMounted = useRef(true);
 
   const { keyword } = useParams(); //for get route id
   const [currentPage, setCurrentPage] = useState(1);
@@ -48,17 +48,12 @@ const Products = () => {
     setPrice(newPrice);
   };
   useEffect(() => {
-    if (isMounted.current) {
-      if (error) {
-        alert.error(error);
-        dispatch(clearErrors());
-      }
-
-      dispatch(getProduct(keyword, currentPage, price, category, ratings));
+    if (error) {
+      alert.error(error);
+      dispatch(clearErrors());
     }
-    return () => {
-      isMounted.current = false;
-    };
+
+    dispatch(getProduct(keyword, currentPage, price, category, ratings));
   }, [dispatch, keyword, currentPage, price, category, ratings, alert, error]);
 
   let count = filteredProductsCount;
@@ -84,7 +79,7 @@ const Products = () => {
               valueLabelDisplay="auto"
               aria-labelledby="range-slider"
               min={0}
-              max={25000}
+              max={200000}
             />
             <Typography>Categories</Typography>
             <ul className="categoryBox">
