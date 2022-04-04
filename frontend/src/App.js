@@ -42,6 +42,7 @@ import Contact from "./component/layout/Contact/Contact";
 import About from "./component/layout/About/About";
 import NotFound from "./component/layout/Not Found/NotFound";
 
+//app
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.user);
 

@@ -58,7 +58,7 @@ export const getProduct =
     }
   };
 
-///get all products for admin
+///Gett all products for admin
 export const getAdminProduct = () => async (dispatch) => {
   try {
     dispatch({

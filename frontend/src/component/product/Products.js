@@ -21,6 +21,7 @@ const categories = [
   "SmartPhones",
 ];
 
+//products
 const Products = () => {
   const dispatch = useDispatch();
   const alert = useAlert();
